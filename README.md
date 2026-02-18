@@ -2,6 +2,7 @@
 
 ReelComic 是一个动漫短剧播放平台（Web + Mobile），包含：
 - 主页、分类页、详情页、播放页、用户资料页、会员订阅页
+- 认证系统：邮箱注册/登录 + Google / Apple OAuth
 - Admin Panel（`/admin`）的控制面板和内容管理页
 - Neon 数据库 schema、Vercel Blob 与 Mux 的接入点
 
@@ -34,6 +35,7 @@ psql "$DATABASE_URL" -f database/seed.sql
 
 核心表：
 - `users`
+- `auth_accounts` / `auth_credentials` / `auth_sessions`
 - `series`
 - `episodes`
 - `tags` / `series_tags`
@@ -52,6 +54,14 @@ psql "$DATABASE_URL" -f database/seed.sql
 Vercel API 路由：
 - `GET /api/health`
 - `GET /api/series`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/auth/session`
+- `GET /api/auth/oauth/google/start`
+- `GET /api/auth/oauth/google/callback`
+- `GET|POST /api/auth/oauth/apple/callback`
+- `GET /api/auth/oauth/apple/start`
 - `POST /api/admin/create-mux-asset`
 - `POST /api/admin/upload-from-url`
 
@@ -66,6 +76,9 @@ Vercel API 路由：
 3. Build Command: `npm run build`
 4. Output Directory: `dist`
 5. 在 Vercel Project Settings 中配置 `.env.example` 对应变量
+6. 配置 OAuth 回调地址：
+   - Google: `https://<your-domain>/api/auth/oauth/google/callback`
+   - Apple: `https://<your-domain>/api/auth/oauth/apple/callback`
 
 ## 6) 安全提醒
 

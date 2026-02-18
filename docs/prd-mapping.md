@@ -7,6 +7,7 @@
 - 分类页（桌面/移动）：`pages/Explore.tsx` + `/categories`
 - 详情页：`pages/Details.tsx`
 - 播放页：`pages/Player.tsx`
+- 登录/注册页（含 Google / Apple OAuth）：`pages/Auth.tsx` + `/auth`
 - 用户资料：`pages/Profile.tsx`
 - 会员订阅：`pages/Shop.tsx` + `/subscription`
 - Admin Dashboard：`pages/admin/Dashboard.tsx` + `/admin`
@@ -16,6 +17,7 @@
 - React 前端：Vite + React + TypeScript
 - Web / Mobile 适配：Tailwind 响应式断点
 - Neon：`database/schema.sql` + `server/neon.ts`
+- Auth：`api/auth/*` + `server/auth/*` + Neon auth tables
 - Vercel Blob：`server/blob.ts` + `api/admin/upload-from-url.ts`
 - Mux：`server/mux.ts` + `api/admin/create-mux-asset.ts`
 

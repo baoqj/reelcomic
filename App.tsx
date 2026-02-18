@@ -7,9 +7,11 @@ import { Player } from './pages/Player';
 import { Profile } from './pages/Profile';
 import { Shop } from './pages/Shop';
 import { Playlist } from './pages/Playlist';
+import { Auth } from './pages/Auth';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DramaContent } from './pages/admin/DramaContent';
 import { Icon } from './components/Icon';
+import { useAuthSession } from './hooks/useAuthSession';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -23,6 +25,7 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isScrolled, setIsScrolled] = useState(false);
+    const { user, loading, refresh } = useAuthSession();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -34,6 +37,12 @@ const Header = () => {
 
     // Hide main header on admin pages
     if (location.pathname.startsWith('/admin')) return null;
+
+    const handleLogout = async () => {
+        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+        await refresh();
+        navigate('/');
+    };
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-background-dark/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-4'}`}>
@@ -69,12 +78,36 @@ const Header = () => {
                     <button className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
                         <Icon name="notifications" className="text-gray-600 dark:text-gray-300" />
                     </button>
-                    <div 
-                        className="size-9 rounded-full bg-gray-200 overflow-hidden border border-gray-300 cursor-pointer"
-                        onClick={() => navigate('/profile')}
-                    >
-                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmb-yf6EQQFvyhjwxGBl_j3xxRqGDPpTt9WVfyLNXV1fA1TCOibNquZsN8Y-S0Z7ugoR09asa2gSJwdwLyKjQVfP9XlQIJ0sfSWiTfGLpNqWFa0_I9g5fKaRPcqh1FJLDWSN-FUBnWUesu7vYnej53ASMm4WiKZVTt1KZldNuX9Zlt13A15iRAIICZSD6GL5KUgRK6wqdYYam0-LohXeOQn12L__DqIgVEqX80kIIgBrWahLEKRx1RpgDoSgW-zAK19xTkxFGwoFQ" alt="User" className="w-full h-full object-cover"/>
-                    </div>
+                    {!loading && !user && (
+                        <button
+                            onClick={() => navigate('/auth')}
+                            className="px-4 py-2 rounded-full bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors"
+                        >
+                            Sign In
+                        </button>
+                    )}
+                    {!loading && user && (
+                        <>
+                            <button
+                                className="size-9 rounded-full bg-gray-200 overflow-hidden border border-gray-300 cursor-pointer flex items-center justify-center"
+                                onClick={() => navigate('/profile')}
+                                title={user.displayName}
+                            >
+                                {user.avatarUrl ? (
+                                    <img src={user.avatarUrl} alt="User" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="text-xs font-black text-gray-700">{user.displayName.slice(0, 1).toUpperCase()}</span>
+                                )}
+                            </button>
+                            <button
+                                onClick={handleLogout}
+                                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                                title="Logout"
+                            >
+                                <Icon name="logout" className="text-gray-600 dark:text-gray-300" />
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </header>
@@ -84,6 +117,7 @@ const Header = () => {
 const MobileNav = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { user } = useAuthSession();
 
     // Hide mobile nav on admin pages
     if (location.pathname.startsWith('/admin')) return null;
@@ -109,9 +143,9 @@ const MobileNav = () => {
                     <Icon name="workspace_premium" filled={isActive(['/subscription', '/shop'])} />
                     <span className="text-[10px] font-bold">VIP</span>
                 </div>
-                 <div onClick={() => navigate('/profile')} className={`flex flex-col items-center gap-1 w-1/5 ${isActive(['/profile']) ? 'text-primary' : 'text-gray-400'}`}>
-                    <Icon name="person" filled={isActive(['/profile'])} />
-                    <span className="text-[10px] font-bold">Profile</span>
+                 <div onClick={() => navigate(user ? '/profile' : '/auth')} className={`flex flex-col items-center gap-1 w-1/5 ${isActive(['/profile', '/auth']) ? 'text-primary' : 'text-gray-400'}`}>
+                    <Icon name="person" filled={isActive(['/profile', '/auth'])} />
+                    <span className="text-[10px] font-bold">{user ? 'Profile' : 'Login'}</span>
                 </div>
             </div>
         </nav>
@@ -142,6 +176,7 @@ const App: React.FC = () => {
                     <Route path="/details/:id" element={<Details />} />
                     <Route path="/player/:id" element={<Player />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/auth" element={<Auth />} />
                     <Route path="/subscription" element={<Shop />} />
                     <Route path="/shop" element={<Shop />} />
                     <Route path="/playlist" element={<Playlist />} />

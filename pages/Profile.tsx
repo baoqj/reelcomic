@@ -2,11 +2,35 @@ import React from 'react';
 import { MOCK_DRAMAS, MOCK_USER_PROFILE } from '../constants';
 import { Icon } from '../components/Icon';
 import { useNavigate } from 'react-router-dom';
+import { useAuthSession } from '../hooks/useAuthSession';
 
 export const Profile: React.FC = () => {
     const navigate = useNavigate();
     const continueWatching = MOCK_DRAMAS.slice(0, 3);
-    const profile = MOCK_USER_PROFILE;
+    const { user } = useAuthSession();
+    if (!user) {
+        return (
+            <div className="min-h-screen pt-24 px-4 md:px-10 flex items-start justify-center">
+                <div className="max-w-xl w-full bg-white dark:bg-[#2d181e] rounded-2xl border border-primary/10 p-8 text-center">
+                    <h2 className="text-2xl font-extrabold mb-3 text-gray-900 dark:text-white">请先登录账户</h2>
+                    <p className="text-gray-500 mb-6">登录后可同步观看历史、VIP权益和设备进度。</p>
+                    <button
+                        onClick={() => navigate('/auth')}
+                        className="px-6 py-3 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition-colors"
+                    >
+                        前往登录 / 注册
+                    </button>
+                </div>
+            </div>
+        );
+    }
+    const profile = {
+        id: user.id,
+        displayName: user.displayName,
+        avatarUrl: user.avatarUrl || MOCK_USER_PROFILE.avatarUrl,
+        email: user.email,
+        vipExpiresAt: 'N/A',
+      };
 
     return (
         <div className="w-full min-h-screen pt-20 px-4 md:px-20 lg:px-40 pb-20">

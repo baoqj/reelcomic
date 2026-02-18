@@ -39,6 +39,15 @@ export interface UserProfile {
   vipExpiresAt?: string;
 }
 
+export interface AuthUser {
+  id: string;
+  email: string;
+  displayName: string;
+  avatarUrl?: string;
+  isAdmin: boolean;
+  vipTier: 'free' | 'vip_monthly' | 'vip_yearly';
+}
+
 export interface SubscriptionPlan {
   id: string;
   title: string;

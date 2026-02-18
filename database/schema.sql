@@ -26,6 +26,45 @@ create table if not exists users (
 
 create unique index if not exists users_email_unique_idx on users ((lower(email)));
 
+create table if not exists auth_accounts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  provider text not null check (provider in ('credentials', 'google', 'apple')),
+  provider_user_id text not null,
+  provider_email text,
+  access_token text,
+  refresh_token text,
+  token_expires_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (provider, provider_user_id),
+  unique (user_id, provider)
+);
+
+create index if not exists auth_accounts_user_idx on auth_accounts(user_id);
+create index if not exists auth_accounts_provider_email_idx on auth_accounts(provider, lower(provider_email));
+
+create table if not exists auth_credentials (
+  user_id uuid primary key references users(id) on delete cascade,
+  password_hash text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists auth_sessions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  session_token_hash text not null unique,
+  expires_at timestamptz not null,
+  revoked_at timestamptz,
+  ip_address inet,
+  user_agent text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists auth_sessions_user_idx on auth_sessions(user_id, created_at desc);
+create index if not exists auth_sessions_active_idx on auth_sessions(expires_at, revoked_at);
+
 create table if not exists tags (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
@@ -176,6 +215,16 @@ create table if not exists series_metrics_daily (
 drop trigger if exists users_set_updated_at on users;
 create trigger users_set_updated_at
 before update on users
+for each row execute function set_updated_at();
+
+drop trigger if exists auth_accounts_set_updated_at on auth_accounts;
+create trigger auth_accounts_set_updated_at
+before update on auth_accounts
+for each row execute function set_updated_at();
+
+drop trigger if exists auth_credentials_set_updated_at on auth_credentials;
+create trigger auth_credentials_set_updated_at
+before update on auth_credentials
 for each row execute function set_updated_at();
 
 drop trigger if exists series_set_updated_at on series;
