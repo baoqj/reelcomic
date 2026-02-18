@@ -37,8 +37,8 @@ const makeEpisode = (
 
 const posterA =
   'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80';
-const posterB =
-  'https://images.unsplash.com/photo-1518131678677-a995febeccaa?auto=format&fit=crop&w=900&q=80';
+const ghostInsuranceCover = '/images/generated/ghost-insurance-cover.svg';
+const ghostInsuranceBackdrop = '/images/generated/ghost-insurance-bg.svg';
 const posterC =
   'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=900&q=80';
 const posterD =
@@ -88,8 +88,8 @@ export const MOCK_DRAMAS: Drama[] = [
     title: '我给诡异交五险',
     synopsis:
       '社保经办员误入诡异世界，靠人间制度整顿鬼域秩序。轻喜剧风格，适合碎片时间追更。',
-    thumbnail: posterB,
-    poster: posterB,
+    thumbnail: ghostInsuranceBackdrop,
+    poster: ghostInsuranceCover,
     rating: 4.7,
     views: '1.8M',
     tags: ['Comedy', 'Fantasy'],
@@ -104,7 +104,7 @@ export const MOCK_DRAMAS: Drama[] = [
         `鬼域社保局 ${idx + 1}`,
         75 + ((idx * 9) % 28),
         idx > 1,
-        posterB,
+        ghostInsuranceBackdrop,
       ),
     ),
   },
@@ -257,4 +257,13 @@ export const MOCK_WATCH_PROGRESS: WatchProgress[] = [
     progressSeconds: 95,
     completed: true,
   },
+];
+
+export const POPULAR_GENRE_CARDS: { name: string; image: string }[] = [
+  { name: 'Romance', image: '/images/generated/genre-romance.svg' },
+  { name: 'Action', image: '/images/generated/genre-action.svg' },
+  { name: 'Fantasy', image: '/images/generated/genre-fantasy.svg' },
+  { name: 'Sci-Fi', image: '/images/generated/genre-scifi.svg' },
+  { name: 'Thriller', image: '/images/generated/genre-thriller.svg' },
+  { name: 'Comedy', image: '/images/generated/genre-comedy.svg' },
 ];

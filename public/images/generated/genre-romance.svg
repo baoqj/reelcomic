@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="g" x1="120" y1="80" x2="1460" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF9AC8"/>
+      <stop offset="0.55" stop-color="#FF6FB1"/>
+      <stop offset="1" stop-color="#6E3562"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g)"/>
+  <circle cx="1330" cy="170" r="130" fill="#FFEBD7" fill-opacity="0.72"/>
+  <path d="M0 680C200 620 430 610 650 648C900 690 1120 740 1600 670V900H0V680Z" fill="#422545"/>
+  <g opacity="0.8" fill="#FFD8E8">
+    <circle cx="190" cy="190" r="10"/><circle cx="240" cy="160" r="8"/><circle cx="292" cy="206" r="9"/>
+    <circle cx="1340" cy="280" r="9"/><circle cx="1278" cy="240" r="7"/><circle cx="1420" cy="230" r="8"/>
+  </g>
+  <path d="M620 520C620 450 676 394 744 394C772 394 799 404 820 423C842 404 869 394 897 394C965 394 1021 450 1021 520C1021 598 953 650 820 742C688 650 620 598 620 520Z" fill="#FFE3EF"/>
+  <path d="M760 470C760 430 790 400 830 400C870 400 900 430 900 470" stroke="#D44E8D" stroke-width="14" stroke-linecap="round"/>
+</svg>

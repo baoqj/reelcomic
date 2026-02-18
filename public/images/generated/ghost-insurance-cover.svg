@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="90" x2="980" y2="1320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2A2E8B"/>
+      <stop offset="0.5" stop-color="#6446C6"/>
+      <stop offset="1" stop-color="#171324"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#6CF2FF"/>
+      <stop offset="1" stop-color="#2FD3FF"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#5FF3C8"/>
+      <stop offset="1" stop-color="#27B8D6"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1440" fill="url(#bg)"/>
+  <circle cx="860" cy="220" r="180" fill="#FFE4A8" fill-opacity="0.22"/>
+  <path d="M0 1160C240 1080 420 1050 640 1090C860 1130 950 1190 1080 1300V1440H0V1160Z" fill="#0B0B17"/>
+
+  <g opacity="0.3">
+    <path d="M120 230C158 165 247 165 284 230V330H120V230Z" fill="#D5ECFF"/>
+    <circle cx="172" cy="245" r="8" fill="#1E2A5A"/>
+    <circle cx="232" cy="245" r="8" fill="#1E2A5A"/>
+    <path d="M170 278C192 294 213 294 234 278" stroke="#1E2A5A" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <g opacity="0.24">
+    <path d="M740 420C792 335 903 336 952 420V560H740V420Z" fill="#D5ECFF"/>
+    <circle cx="795" cy="440" r="10" fill="#2A3278"/>
+    <circle cx="894" cy="440" r="10" fill="#2A3278"/>
+    <path d="M792 486C829 512 864 512 902 486" stroke="#2A3278" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(265,370)">
+    <ellipse cx="270" cy="650" rx="240" ry="62" fill="#5AF8D6" fill-opacity="0.35" filter="url(#glow)"/>
+    <path d="M210 280C180 210 178 112 240 70C302 28 426 37 470 101C514 165 500 241 476 290L420 360H278L210 280Z" fill="url(#hair)"/>
+    <path d="M268 258C270 214 299 182 349 178C401 175 435 209 439 255C443 316 408 366 353 366C297 366 265 314 268 258Z" fill="#FFDCC9"/>
+    <ellipse cx="323" cy="262" rx="11" ry="14" fill="#2A2758"/>
+    <ellipse cx="387" cy="262" rx="11" ry="14" fill="#2A2758"/>
+    <path d="M324 317C344 334 364 334 386 316" stroke="#F268A5" stroke-width="8" stroke-linecap="round"/>
+    <path d="M200 394C236 352 468 347 514 394V760H200V394Z" fill="url(#coat)"/>
+    <path d="M200 420C240 458 474 458 514 420" stroke="#D4FFFA" stroke-opacity="0.6" stroke-width="8"/>
+    <rect x="303" y="430" width="110" height="170" rx="16" fill="#1D2E63"/>
+    <rect x="317" y="450" width="82" height="18" rx="9" fill="#67F8DC"/>
+    <rect x="317" y="482" width="82" height="18" rx="9" fill="#67F8DC"/>
+    <rect x="317" y="514" width="82" height="18" rx="9" fill="#67F8DC"/>
+    <circle cx="255" cy="495" r="28" fill="#88F9E2"/>
+    <circle cx="460" cy="495" r="28" fill="#88F9E2"/>
+  </g>
+
+  <g filter="url(#glow)">
+    <text x="540" y="1268" text-anchor="middle" fill="#FFFFFF" font-family="'Zen Kaku Gothic New', sans-serif" font-size="92" font-weight="900">我给诡异交五险</text>
+    <text x="540" y="1342" text-anchor="middle" fill="#7AF6E5" font-family="'Zen Kaku Gothic New', sans-serif" font-size="38" font-weight="700">GHOST SOCIAL INSURANCE</text>
+  </g>
+</svg>

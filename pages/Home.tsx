@@ -3,6 +3,7 @@ import { DramaCard } from '../components/DramaCard';
 import { Icon } from '../components/Icon';
 import { useNavigate } from 'react-router-dom';
 import { useSeriesCatalog } from '../hooks/useSeriesCatalog';
+import { POPULAR_GENRE_CARDS } from '../constants';
 
 export const Home: React.FC = () => {
     const { series } = useSeriesCatalog();
@@ -99,11 +100,16 @@ export const Home: React.FC = () => {
                         <h3 className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white">Popular Genres</h3>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {['Romance', 'Action', 'Fantasy', 'Sci-Fi', 'Thriller', 'Comedy'].map((genre, idx) => (
-                             <div key={idx} className="group cursor-pointer relative aspect-[16/9] rounded-xl overflow-hidden bg-primary/10">
-                                <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/40 transition-colors"></div>
+                        {POPULAR_GENRE_CARDS.map((genre) => (
+                             <div key={genre.name} className="group cursor-pointer relative aspect-[16/9] rounded-xl overflow-hidden bg-primary/10">
+                                <img
+                                    src={genre.image}
+                                    alt={`${genre.name} anime style`}
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent group-hover:from-black/65 transition-colors"></div>
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-white font-bold text-lg drop-shadow-md">{genre}</span>
+                                    <span className="text-white font-bold text-lg drop-shadow-md">{genre.name}</span>
                                 </div>
                              </div>
                         ))}
