@@ -2,7 +2,8 @@
 
 ReelComic 是一个动漫短剧播放平台（Web + Mobile），包含：
 - 主页、分类页、详情页、播放页、用户资料页、会员订阅页
-- 认证系统：邮箱注册/登录 + Google / Apple OAuth
+- 认证系统：邮箱注册/登录 + Google / Apple OAuth（Google OpenID API）
+- 订阅支付：Stripe Checkout + Stripe Billing Portal + Webhook 回写
 - Admin Panel（`/admin`）的控制面板和内容管理页
 - Neon 数据库 schema、Vercel Blob 与 Mux 的接入点
 
@@ -41,6 +42,7 @@ psql "$DATABASE_URL" -f database/seed.sql
 - `tags` / `series_tags`
 - `watch_progress`
 - `subscription_plans` / `subscriptions` / `payments`
+- `stripe_webhook_events`
 - `assets`（Vercel Blob + Mux 资产映射）
 - `admin_audit_logs`
 
@@ -62,6 +64,9 @@ Vercel API 路由：
 - `GET /api/auth/oauth/google/callback`
 - `GET|POST /api/auth/oauth/apple/callback`
 - `GET /api/auth/oauth/apple/start`
+- `POST /api/billing/checkout`
+- `POST /api/billing/portal`
+- `POST /api/billing/webhook`
 - `POST /api/admin/create-mux-asset`
 - `POST /api/admin/upload-from-url`
 
@@ -79,6 +84,9 @@ Vercel API 路由：
 6. 配置 OAuth 回调地址：
    - Google: `https://<your-domain>/api/auth/oauth/google/callback`
    - Apple: `https://<your-domain>/api/auth/oauth/apple/callback`
+7. 配置 Stripe Webhook：
+   - Endpoint: `https://<your-domain>/api/billing/webhook`
+   - Events: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`
 
 ## 6) 安全提醒
 

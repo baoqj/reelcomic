@@ -18,6 +18,7 @@ create table if not exists users (
   email text not null,
   display_name text not null,
   avatar_blob_url text,
+  stripe_customer_id text,
   role text not null default 'user' check (role in ('user', 'admin')),
   vip_tier text not null default 'free' check (vip_tier in ('free', 'vip_monthly', 'vip_yearly')),
   created_at timestamptz not null default now(),
@@ -25,6 +26,7 @@ create table if not exists users (
 );
 
 create unique index if not exists users_email_unique_idx on users ((lower(email)));
+create unique index if not exists users_stripe_customer_unique_idx on users(stripe_customer_id) where stripe_customer_id is not null;
 
 create table if not exists auth_accounts (
   id uuid primary key default gen_random_uuid(),
@@ -152,6 +154,8 @@ create table if not exists subscriptions (
   started_at timestamptz not null,
   expires_at timestamptz not null,
   auto_renew boolean not null default true,
+  stripe_subscription_id text unique,
+  stripe_price_id text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -162,13 +166,23 @@ create table if not exists payments (
   id uuid primary key default gen_random_uuid(),
   subscription_id uuid references subscriptions(id) on delete set null,
   user_id uuid not null references users(id) on delete cascade,
-  provider text not null default 'vercel_checkout',
+  provider text not null default 'stripe',
   provider_txn_id text,
   amount_cents int not null check (amount_cents > 0),
   currency text not null default 'USD',
   status text not null check (status in ('pending', 'succeeded', 'failed', 'refunded')),
   paid_at timestamptz,
+  stripe_invoice_id text,
+  stripe_payment_intent_id text,
   created_at timestamptz not null default now()
+);
+
+create index if not exists payments_user_idx on payments(user_id, created_at desc);
+create index if not exists payments_stripe_invoice_idx on payments(stripe_invoice_id);
+
+create table if not exists stripe_webhook_events (
+  stripe_event_id text primary key,
+  processed_at timestamptz not null default now()
 );
 
 create table if not exists assets (
@@ -210,6 +224,24 @@ create table if not exists series_metrics_daily (
   revenue_cents int not null default 0,
   created_at timestamptz not null default now(),
   unique (metric_date, series_id)
+);
+
+-- Compatibility for existing databases that were created before Stripe columns existed
+alter table users add column if not exists stripe_customer_id text;
+create unique index if not exists users_stripe_customer_unique_idx on users(stripe_customer_id) where stripe_customer_id is not null;
+
+alter table subscriptions add column if not exists stripe_subscription_id text;
+alter table subscriptions add column if not exists stripe_price_id text;
+create unique index if not exists subscriptions_stripe_subscription_unique_idx on subscriptions(stripe_subscription_id) where stripe_subscription_id is not null;
+
+alter table payments add column if not exists stripe_invoice_id text;
+alter table payments add column if not exists stripe_payment_intent_id text;
+create index if not exists payments_user_idx on payments(user_id, created_at desc);
+create index if not exists payments_stripe_invoice_idx on payments(stripe_invoice_id);
+
+create table if not exists stripe_webhook_events (
+  stripe_event_id text primary key,
+  processed_at timestamptz not null default now()
 );
 
 drop trigger if exists users_set_updated_at on users;

@@ -18,6 +18,7 @@
 - Web / Mobile 适配：Tailwind 响应式断点
 - Neon：`database/schema.sql` + `server/neon.ts`
 - Auth：`api/auth/*` + `server/auth/*` + Neon auth tables
+- Stripe：`api/billing/*` + `server/stripe.ts` + `server/billing/store.ts`
 - Vercel Blob：`server/blob.ts` + `api/admin/upload-from-url.ts`
 - Mux：`server/mux.ts` + `api/admin/create-mux-asset.ts`
 

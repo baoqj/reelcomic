@@ -1,10 +1,77 @@
 import React, { useState } from 'react';
 import { Icon } from '../components/Icon';
 import { SUBSCRIPTION_PLANS } from '../constants';
+import { useNavigate } from 'react-router-dom';
+import { useAuthSession } from '../hooks/useAuthSession';
 
 export const Shop: React.FC = () => {
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
     const selectedPlan = SUBSCRIPTION_PLANS.find((p) => p.cycle === billingCycle) || SUBSCRIPTION_PLANS[0];
+    const [isPaying, setIsPaying] = useState(false);
+    const [isOpeningPortal, setIsOpeningPortal] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const { user } = useAuthSession();
+
+    const handleSubscribe = async () => {
+        setError('');
+        if (!user) {
+            navigate('/auth');
+            return;
+        }
+        setIsPaying(true);
+        try {
+            const response = await fetch('/api/billing/checkout', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ cycle: billingCycle }),
+            });
+            const payload = await response.json();
+            if (!response.ok) {
+                setError(payload.error || '创建支付会话失败');
+                return;
+            }
+            if (payload.checkoutUrl) {
+                window.location.href = payload.checkoutUrl;
+                return;
+            }
+            setError('Stripe 返回无效链接');
+        } catch {
+            setError('支付请求失败，请稍后再试');
+        } finally {
+            setIsPaying(false);
+        }
+    };
+
+    const handleManageSubscription = async () => {
+        setError('');
+        if (!user) {
+            navigate('/auth');
+            return;
+        }
+        setIsOpeningPortal(true);
+        try {
+            const response = await fetch('/api/billing/portal', {
+                method: 'POST',
+                credentials: 'include',
+            });
+            const payload = await response.json();
+            if (!response.ok) {
+                setError(payload.error || '无法打开账单管理');
+                return;
+            }
+            if (payload.portalUrl) {
+                window.location.href = payload.portalUrl;
+                return;
+            }
+            setError('Stripe Portal 返回无效链接');
+        } catch {
+            setError('账单管理请求失败，请稍后再试');
+        } finally {
+            setIsOpeningPortal(false);
+        }
+    };
 
     return (
         <div className="w-full min-h-screen pt-20 px-4 md:px-20 lg:px-40 pb-20">
@@ -82,8 +149,12 @@ export const Shop: React.FC = () => {
                                 <span className="text-gray-500 text-sm">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
                             </div>
                         </div>
-                        <button className="w-full py-4 px-6 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95">
-                            Subscribe Now
+                        <button
+                            onClick={handleSubscribe}
+                            disabled={isPaying}
+                            className="w-full py-4 px-6 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+                        >
+                            {isPaying ? 'Redirecting to Stripe...' : 'Subscribe with Stripe'}
                         </button>
                         <ul className="flex flex-col gap-4">
                              {selectedPlan.perks.map((feature, i) => (
@@ -140,6 +211,20 @@ export const Shop: React.FC = () => {
 
                 {/* FAQ Section */}
                 <div className="mt-24 max-w-2xl mx-auto">
+                    {error && (
+                        <div className="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 text-red-600 text-sm font-semibold">
+                            {error}
+                        </div>
+                    )}
+                    <div className="mb-10 flex justify-center">
+                        <button
+                            onClick={handleManageSubscription}
+                            disabled={isOpeningPortal}
+                            className="px-6 py-3 rounded-xl border border-primary/30 text-primary font-bold hover:bg-primary/5 disabled:opacity-60 transition-colors"
+                        >
+                            {isOpeningPortal ? 'Opening...' : 'Manage Existing Stripe Subscription'}
+                        </button>
+                    </div>
                     <h2 className="text-2xl font-bold text-center mb-10 dark:text-white">Frequently Asked Questions</h2>
                     <div className="space-y-4">
                         {[
