@@ -2,10 +2,12 @@ import React from 'react';
 import { MOCK_DRAMAS } from '../constants';
 import { DramaCard } from '../components/DramaCard';
 import { Icon } from '../components/Icon';
+import { useI18n } from '../i18n';
 
 export const Playlist: React.FC = () => {
+    const { t, localizeSeries } = useI18n();
     // Simulating a playlist with some mock data
-    const playlistDramas = [MOCK_DRAMAS[0], MOCK_DRAMAS[2], MOCK_DRAMAS[4]];
+    const playlistDramas = [MOCK_DRAMAS[0], MOCK_DRAMAS[2], MOCK_DRAMAS[4]].map(localizeSeries);
 
     return (
         <div className="w-full min-h-screen pt-20 px-4 md:px-10 max-w-[1440px] mx-auto pb-24">
@@ -14,8 +16,8 @@ export const Playlist: React.FC = () => {
                     <Icon name="video_library" className="text-2xl" />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">My Playlist</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{playlistDramas.length} Series saved</p>
+                    <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">{t('playlist.title')}</h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('playlist.savedSeries', { count: playlistDramas.length })}</p>
                 </div>
             </div>
 
@@ -35,9 +37,9 @@ export const Playlist: React.FC = () => {
                     <div className="size-20 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mb-4 text-gray-400">
                         <Icon name="playlist_add" className="text-4xl" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Your playlist is empty</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('playlist.emptyTitle')}</h3>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xs mb-6">
-                        Save shows you want to watch later by clicking the "Add to List" button on any series.
+                        {t('playlist.emptyDescription')}
                     </p>
                 </div>
             )}

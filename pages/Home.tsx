@@ -4,10 +4,13 @@ import { Icon } from '../components/Icon';
 import { useNavigate } from 'react-router-dom';
 import { useSeriesCatalog } from '../hooks/useSeriesCatalog';
 import { POPULAR_GENRE_CARDS } from '../constants';
+import { useI18n } from '../i18n';
 
 export const Home: React.FC = () => {
     const { series } = useSeriesCatalog();
-    const featuredDrama = series[1] || series[0];
+    const { t, translateGenre, localizeSeries } = useI18n();
+    const localizedSeries = series.map(localizeSeries);
+    const featuredDrama = localizedSeries[1] || localizedSeries[0];
     const navigate = useNavigate();
 
     if (!featuredDrama) return null;
@@ -26,7 +29,7 @@ export const Home: React.FC = () => {
 
                 <div className="absolute bottom-0 left-0 p-6 md:p-12 lg:p-20 max-w-2xl flex flex-col justify-end h-full">
                     <span className="inline-block px-3 py-1 mb-4 text-[10px] md:text-xs font-bold tracking-widest uppercase bg-primary text-white rounded w-fit shadow-lg shadow-primary/30">
-                        Featured Short
+                        {t('home.featuredShort')}
                     </span>
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-4 leading-tight">
                         {featuredDrama.title}
@@ -40,14 +43,14 @@ export const Home: React.FC = () => {
                             className="bg-primary hover:bg-primary/90 text-white px-8 py-3.5 rounded-full font-bold flex items-center gap-2 transition-transform hover:scale-105 active:scale-95 shadow-lg shadow-primary/25"
                         >
                             <Icon name="play_arrow" filled />
-                            Watch Now
+                            {t('home.watchNow')}
                         </button>
                         <button 
                              onClick={() => navigate(`/details/${featuredDrama.id}`)}
                             className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-8 py-3.5 rounded-full font-bold flex items-center gap-2 border border-white/20 transition-colors"
                         >
                             <Icon name="info" />
-                            Details
+                            {t('home.details')}
                         </button>
                     </div>
                 </div>
@@ -58,14 +61,14 @@ export const Home: React.FC = () => {
                 <section>
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-                             <Icon name="new_releases" className="text-primary" />
-                            New Releases
+                            <Icon name="new_releases" className="text-primary" />
+                            {t('home.newReleases')}
                         </h3>
-                        <span className="text-primary text-sm font-bold cursor-pointer hover:underline">View All</span>
+                        <span className="text-primary text-sm font-bold cursor-pointer hover:underline">{t('common.viewAll')}</span>
                     </div>
                     <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0">
-                        {series.map((drama, idx) => (
-                            <DramaCard key={drama.id} drama={drama} showBadge={idx === 0 ? 'New EP' : undefined} />
+                        {localizedSeries.map((drama, idx) => (
+                            <DramaCard key={drama.id} drama={drama} showBadge={idx === 0 ? t('home.newEpisodeBadge') : undefined} />
                         ))}
                     </div>
                 </section>
@@ -75,7 +78,7 @@ export const Home: React.FC = () => {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
                             <Icon name="trending_up" className="text-primary" />
-                            Trending Now
+                            {t('home.trendingNow')}
                         </h3>
                          <div className="flex gap-2">
                             <button className="size-8 rounded-full border border-gray-300 dark:border-white/20 flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors">
@@ -87,8 +90,8 @@ export const Home: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0">
-                        {[...series].reverse().map((drama, idx) => (
-                            <DramaCard key={drama.id} drama={drama} showBadge={idx === 0 ? '#1 Trending' : undefined} />
+                        {[...localizedSeries].reverse().map((drama, idx) => (
+                            <DramaCard key={drama.id} drama={drama} showBadge={idx === 0 ? t('home.trendingBadge') : undefined} />
                         ))}
                     </div>
                 </section>
@@ -97,19 +100,19 @@ export const Home: React.FC = () => {
                 <section>
                      <div className="flex items-center gap-2 mb-6">
                         <Icon name="category" className="text-primary" />
-                        <h3 className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white">Popular Genres</h3>
+                        <h3 className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white">{t('home.popularGenres')}</h3>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         {POPULAR_GENRE_CARDS.map((genre) => (
                              <div key={genre.name} className="group cursor-pointer relative aspect-[16/9] rounded-xl overflow-hidden bg-primary/10">
                                 <img
                                     src={genre.image}
-                                    alt={`${genre.name} anime style`}
+                                    alt={`${translateGenre(genre.name)} anime style`}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent group-hover:from-black/65 transition-colors"></div>
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-white font-bold text-lg drop-shadow-md">{genre.name}</span>
+                                    <span className="text-white font-bold text-lg drop-shadow-md">{translateGenre(genre.name)}</span>
                                 </div>
                              </div>
                         ))}
@@ -121,12 +124,12 @@ export const Home: React.FC = () => {
                 <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center gap-6">
                     <h2 className="text-2xl font-extrabold text-primary uppercase">ReelComic</h2>
                     <p className="text-sm text-gray-500 text-center max-w-md">
-                        Short anime episodes, premium streaming, and creator-friendly publishing in one place.
+                        {t('home.footerDescription')}
                     </p>
                     <div className="flex gap-6 text-sm font-bold text-gray-400">
-                        <span className="hover:text-primary cursor-pointer">Privacy</span>
-                        <span className="hover:text-primary cursor-pointer">Terms</span>
-                        <span className="hover:text-primary cursor-pointer">Contact</span>
+                        <span className="hover:text-primary cursor-pointer">{t('home.footerPrivacy')}</span>
+                        <span className="hover:text-primary cursor-pointer">{t('home.footerTerms')}</span>
+                        <span className="hover:text-primary cursor-pointer">{t('home.footerContact')}</span>
                     </div>
                     <p className="text-xs text-gray-300 mt-6">© 2026 ReelComic Studio.</p>
                 </div>

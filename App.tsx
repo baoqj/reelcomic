@@ -12,6 +12,8 @@ import { Dashboard } from './pages/admin/Dashboard';
 import { DramaContent } from './pages/admin/DramaContent';
 import { Icon } from './components/Icon';
 import { useAuthSession } from './hooks/useAuthSession';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
+import { I18nProvider, useI18n } from './i18n';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -26,6 +28,7 @@ const Header = () => {
     const location = useLocation();
     const [isScrolled, setIsScrolled] = useState(false);
     const { user, loading, refresh } = useAuthSession();
+    const { t } = useI18n();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -56,13 +59,13 @@ const Header = () => {
                     </div>
                     
                     <nav className="hidden md:flex items-center gap-6">
-                        <span onClick={() => navigate('/')} className="text-sm font-semibold cursor-pointer hover:text-primary transition-colors text-gray-800 dark:text-gray-200">Home</span>
-                        <span onClick={() => navigate('/categories')} className="text-sm font-semibold cursor-pointer hover:text-primary transition-colors text-gray-800 dark:text-gray-200">Categories</span>
-                        <span onClick={() => navigate('/playlist')} className="text-sm font-semibold cursor-pointer hover:text-primary transition-colors text-gray-800 dark:text-gray-200">Playlist</span>
+                        <span onClick={() => navigate('/')} className="text-sm font-semibold cursor-pointer hover:text-primary transition-colors text-gray-800 dark:text-gray-200">{t('header.home')}</span>
+                        <span onClick={() => navigate('/categories')} className="text-sm font-semibold cursor-pointer hover:text-primary transition-colors text-gray-800 dark:text-gray-200">{t('header.categories')}</span>
+                        <span onClick={() => navigate('/playlist')} className="text-sm font-semibold cursor-pointer hover:text-primary transition-colors text-gray-800 dark:text-gray-200">{t('header.playlist')}</span>
                         <span onClick={() => navigate('/subscription')} className="text-sm font-semibold cursor-pointer text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
-                            <Icon name="workspace_premium" className="text-lg"/> VIP
+                            <Icon name="workspace_premium" className="text-lg"/> {t('header.vip')}
                         </span>
-                         <span onClick={() => navigate('/admin')} className="text-sm font-semibold cursor-pointer text-gray-500 hover:text-primary transition-colors">Admin</span>
+                         <span onClick={() => navigate('/admin')} className="text-sm font-semibold cursor-pointer text-gray-500 hover:text-primary transition-colors">{t('header.admin')}</span>
                     </nav>
                 </div>
 
@@ -71,9 +74,15 @@ const Header = () => {
                         <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
                         <input 
                             type="text" 
-                            placeholder="Search..." 
+                            placeholder={t('header.searchPlaceholder')}
                             className="bg-primary/5 dark:bg-white/10 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary w-48 transition-all"
                         />
+                    </div>
+                    <div className="sm:hidden">
+                        <LanguageSwitcher compact />
+                    </div>
+                    <div className="hidden sm:block">
+                        <LanguageSwitcher />
                     </div>
                     <button className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
                         <Icon name="notifications" className="text-gray-600 dark:text-gray-300" />
@@ -83,7 +92,7 @@ const Header = () => {
                             onClick={() => navigate('/auth')}
                             className="px-4 py-2 rounded-full bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors"
                         >
-                            Sign In
+                            {t('header.signIn')}
                         </button>
                     )}
                     {!loading && user && (
@@ -102,7 +111,7 @@ const Header = () => {
                             <button
                                 onClick={handleLogout}
                                 className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                                title="Logout"
+                                title={t('header.logout')}
                             >
                                 <Icon name="logout" className="text-gray-600 dark:text-gray-300" />
                             </button>
@@ -118,6 +127,7 @@ const MobileNav = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuthSession();
+    const { t } = useI18n();
 
     // Hide mobile nav on admin pages
     if (location.pathname.startsWith('/admin')) return null;
@@ -129,23 +139,23 @@ const MobileNav = () => {
             <div className="flex justify-between items-center">
                 <div onClick={() => navigate('/')} className={`flex flex-col items-center gap-1 w-1/5 ${isActive(['/']) ? 'text-primary' : 'text-gray-400'}`}>
                     <Icon name="home" filled={isActive(['/'])} />
-                    <span className="text-[10px] font-bold">Home</span>
+                    <span className="text-[10px] font-bold">{t('header.home')}</span>
                 </div>
                 <div onClick={() => navigate('/categories')} className={`flex flex-col items-center gap-1 w-1/5 ${isActive(['/categories', '/explore']) ? 'text-primary' : 'text-gray-400'}`}>
                     <Icon name="explore" filled={isActive(['/categories', '/explore'])} />
-                    <span className="text-[10px] font-bold">Categories</span>
+                    <span className="text-[10px] font-bold">{t('header.categories')}</span>
                 </div>
                 <div onClick={() => navigate('/playlist')} className={`flex flex-col items-center gap-1 w-1/5 ${isActive(['/playlist']) ? 'text-primary' : 'text-gray-400'}`}>
                     <Icon name="video_library" filled={isActive(['/playlist'])} />
-                    <span className="text-[10px] font-bold">Playlist</span>
+                    <span className="text-[10px] font-bold">{t('header.playlist')}</span>
                 </div>
                  <div onClick={() => navigate('/subscription')} className={`flex flex-col items-center gap-1 w-1/5 ${isActive(['/subscription', '/shop']) ? 'text-primary' : 'text-gray-400'}`}>
                     <Icon name="workspace_premium" filled={isActive(['/subscription', '/shop'])} />
-                    <span className="text-[10px] font-bold">VIP</span>
+                    <span className="text-[10px] font-bold">{t('header.vip')}</span>
                 </div>
                  <div onClick={() => navigate(user ? '/profile' : '/auth')} className={`flex flex-col items-center gap-1 w-1/5 ${isActive(['/profile', '/auth']) ? 'text-primary' : 'text-gray-400'}`}>
                     <Icon name="person" filled={isActive(['/profile', '/auth'])} />
-                    <span className="text-[10px] font-bold">{user ? 'Profile' : 'Login'}</span>
+                    <span className="text-[10px] font-bold">{user ? t('header.profile') : t('header.login')}</span>
                 </div>
             </div>
         </nav>
@@ -165,31 +175,33 @@ const MainContainer: React.FC<{children: React.ReactNode}> = ({children}) => {
 
 const App: React.FC = () => {
     return (
-        <HashRouter>
-            <ScrollToTop />
-            <MainContainer>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/categories" element={<Explore />} />
-                    <Route path="/explore" element={<Explore />} />
-                    <Route path="/details/:id" element={<Details />} />
-                    <Route path="/player/:id" element={<Player />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/subscription" element={<Shop />} />
-                    <Route path="/shop" element={<Shop />} />
-                    <Route path="/playlist" element={<Playlist />} />
-                    
-                    {/* Admin Routes */}
-                    <Route path="/admin" element={<Dashboard />} />
-                    <Route path="/admin/content" element={<DramaContent />} />
-                    <Route path="/admin/dramas" element={<DramaContent />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-                <MobileNav />
-            </MainContainer>
-        </HashRouter>
+        <I18nProvider>
+            <HashRouter>
+                <ScrollToTop />
+                <MainContainer>
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/categories" element={<Explore />} />
+                        <Route path="/explore" element={<Explore />} />
+                        <Route path="/details/:id" element={<Details />} />
+                        <Route path="/player/:id" element={<Player />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/subscription" element={<Shop />} />
+                        <Route path="/shop" element={<Shop />} />
+                        <Route path="/playlist" element={<Playlist />} />
+                        
+                        {/* Admin Routes */}
+                        <Route path="/admin" element={<Dashboard />} />
+                        <Route path="/admin/content" element={<DramaContent />} />
+                        <Route path="/admin/dramas" element={<DramaContent />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                    <MobileNav />
+                </MainContainer>
+            </HashRouter>
+        </I18nProvider>
     );
 };
 

@@ -1,19 +1,21 @@
 import React, { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
+import { useI18n } from '../i18n';
 
 type Mode = 'login' | 'register';
 
 const oauthErrorMap: Record<string, string> = {
-  google_state: 'Google 登录已失效，请重试。',
-  google_callback: 'Google 登录失败，请稍后再试。',
-  apple_state: 'Apple 登录已失效，请重试。',
-  apple_callback: 'Apple 登录失败，请稍后再试。',
+  google_state: 'auth.oauthErrorGoogleState',
+  google_callback: 'auth.oauthErrorGoogleCallback',
+  apple_state: 'auth.oauthErrorAppleState',
+  apple_callback: 'auth.oauthErrorAppleCallback',
 };
 
 export const Auth: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useI18n();
   const [mode, setMode] = useState<Mode>('login');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,21 +29,21 @@ export const Auth: React.FC = () => {
     return params.get('error');
   }, [location.search]);
 
-  const displayError = error || (oauthError ? oauthErrorMap[oauthError] || 'OAuth 登录失败。' : '');
+  const displayError = error || (oauthError ? t(oauthErrorMap[oauthError] || 'auth.oauthErrorDefault') : '');
 
   const submit = async () => {
     setError('');
     if (!email || !password) {
-      setError('请填写邮箱和密码');
+      setError(t('auth.emptyEmailPassword'));
       return;
     }
     if (mode === 'register') {
       if (!displayName || displayName.trim().length < 2) {
-        setError('昵称至少 2 个字符');
+        setError(t('auth.displayNameMin'));
         return;
       }
       if (password !== confirmPassword) {
-        setError('两次密码输入不一致');
+        setError(t('auth.passwordMismatch'));
         return;
       }
     }
@@ -61,12 +63,12 @@ export const Auth: React.FC = () => {
       });
       const payload = await response.json();
       if (!response.ok) {
-        setError(payload.error || '认证失败');
+        setError(payload.error || t('auth.authFailed'));
         return;
       }
       navigate('/profile');
     } catch {
-      setError('网络异常，请稍后再试。');
+      setError(t('auth.networkError'));
     } finally {
       setLoading(false);
     }
@@ -84,13 +86,13 @@ export const Auth: React.FC = () => {
           <div className="absolute -left-16 bottom-0 size-60 rounded-full bg-cyan-300/20 blur-2xl"></div>
           <div className="relative z-10 flex flex-col justify-between">
             <div>
-              <p className="uppercase tracking-[0.35em] text-xs text-white/70 mb-4">ReelComic Access</p>
-              <h1 className="text-5xl font-black leading-tight mb-4">登录后继续追更你的短剧宇宙</h1>
-              <p className="text-white/85 text-lg">支持邮箱注册与 Google / Apple 一键登录，跨设备同步观看进度和会员权益。</p>
+              <p className="uppercase tracking-[0.35em] text-xs text-white/70 mb-4">{t('auth.heroLabel')}</p>
+              <h1 className="text-5xl font-black leading-tight mb-4">{t('auth.heroTitle')}</h1>
+              <p className="text-white/85 text-lg">{t('auth.heroDescription')}</p>
             </div>
             <div className="flex gap-8 text-sm font-semibold text-white/85">
-              <div className="flex items-center gap-2"><Icon name="movie" /> 海量日漫短剧</div>
-              <div className="flex items-center gap-2"><Icon name="workspace_premium" /> VIP 专享分集</div>
+              <div className="flex items-center gap-2"><Icon name="movie" /> {t('auth.heroPointLibrary')}</div>
+              <div className="flex items-center gap-2"><Icon name="workspace_premium" /> {t('auth.heroPointVip')}</div>
             </div>
           </div>
         </section>
@@ -98,20 +100,20 @@ export const Auth: React.FC = () => {
         <section className="rounded-3xl bg-white dark:bg-[#211116] border border-gray-200 dark:border-white/10 shadow-xl p-6 md:p-10">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-black text-gray-900 dark:text-white">
-              {mode === 'login' ? '登录 ReelComic' : '创建 ReelComic 账号'}
+              {mode === 'login' ? t('auth.loginTitle') : t('auth.registerTitle')}
             </h2>
             <div className="flex rounded-xl bg-gray-100 dark:bg-white/5 p-1">
               <button
                 className={`px-4 py-1.5 rounded-lg text-sm font-bold ${mode === 'login' ? 'bg-white dark:bg-primary text-primary dark:text-white shadow-sm' : 'text-gray-500'}`}
                 onClick={() => setMode('login')}
               >
-                登录
+                {t('auth.tabLogin')}
               </button>
               <button
                 className={`px-4 py-1.5 rounded-lg text-sm font-bold ${mode === 'register' ? 'bg-white dark:bg-primary text-primary dark:text-white shadow-sm' : 'text-gray-500'}`}
                 onClick={() => setMode('register')}
               >
-                注册
+                {t('auth.tabRegister')}
               </button>
             </div>
           </div>
@@ -119,19 +121,19 @@ export const Auth: React.FC = () => {
           <div className="space-y-4">
             {mode === 'register' && (
               <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">昵称</label>
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">{t('auth.displayNameLabel')}</label>
                 <input
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   type="text"
-                  placeholder="例如：NekoWatcher"
+                  placeholder={t('auth.displayNamePlaceholder')}
                   className="mt-1 w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
             )}
 
             <div>
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">邮箱</label>
+              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">{t('auth.emailLabel')}</label>
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -142,24 +144,24 @@ export const Auth: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">密码</label>
+              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">{t('auth.passwordLabel')}</label>
               <input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 type="password"
-                placeholder="至少 8 位"
+                placeholder={t('auth.passwordPlaceholder')}
                 className="mt-1 w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>
 
             {mode === 'register' && (
               <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">确认密码</label>
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">{t('auth.confirmPasswordLabel')}</label>
                 <input
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   type="password"
-                  placeholder="再次输入密码"
+                  placeholder={t('auth.confirmPasswordPlaceholder')}
                   className="mt-1 w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
@@ -173,12 +175,12 @@ export const Auth: React.FC = () => {
             disabled={loading}
             className="mt-6 w-full rounded-xl bg-primary text-white py-3.5 font-bold hover:bg-primary/90 disabled:opacity-60 transition-colors"
           >
-            {loading ? '处理中...' : mode === 'login' ? '登录' : '创建账号'}
+            {loading ? t('auth.submitting') : mode === 'login' ? t('auth.submitLogin') : t('auth.submitRegister')}
           </button>
 
           <div className="my-6 flex items-center gap-3 text-gray-400">
             <div className="h-px bg-gray-200 dark:bg-white/10 flex-1"></div>
-            <span className="text-xs font-bold uppercase tracking-widest">或使用 OAuth</span>
+            <span className="text-xs font-bold uppercase tracking-widest">{t('auth.orOAuth')}</span>
             <div className="h-px bg-gray-200 dark:bg-white/10 flex-1"></div>
           </div>
 
@@ -187,13 +189,13 @@ export const Auth: React.FC = () => {
               onClick={() => startOAuth('google')}
               className="rounded-xl border border-gray-200 dark:border-white/10 py-3 font-semibold hover:border-primary/30 hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
             >
-              <Icon name="public" /> Google 登录
+              <Icon name="public" /> {t('auth.googleLogin')}
             </button>
             <button
               onClick={() => startOAuth('apple')}
               className="rounded-xl border border-gray-200 dark:border-white/10 py-3 font-semibold hover:border-primary/30 hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
             >
-              <Icon name="logo_dev" /> Apple 登录
+              <Icon name="logo_dev" /> {t('auth.appleLogin')}
             </button>
           </div>
         </section>

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MOCK_DRAMAS } from '../constants';
 import { Icon } from '../components/Icon';
+import { useI18n } from '../i18n';
 
 export const Player: React.FC = () => {
     const { id } = useParams();
-    const drama = MOCK_DRAMAS.find(d => d.id === id) || MOCK_DRAMAS[0];
+    const { t, localizeSeries } = useI18n();
+    const drama = localizeSeries(MOCK_DRAMAS.find(d => d.id === id) || MOCK_DRAMAS[0]);
     const [isPlaying, setIsPlaying] = useState(false);
 
     return (
@@ -38,7 +40,7 @@ export const Player: React.FC = () => {
                              <div className="flex justify-between items-start">
                                  <div>
                                      <h2 className="font-bold text-lg leading-tight">{drama.title}</h2>
-                                     <p className="text-xs text-white/70">Episode 1</p>
+                                     <p className="text-xs text-white/70">{t('player.episodeNumber', { number: 1 })}</p>
                                  </div>
                                  <span className="px-2 py-1 bg-primary text-[10px] font-bold rounded uppercase">HD</span>
                              </div>
@@ -68,7 +70,7 @@ export const Player: React.FC = () => {
                                     </div>
                                     <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-primary">
                                         <Icon name="share" />
-                                        <span className="text-[10px]">Share</span>
+                                        <span className="text-[10px]">{t('player.share')}</span>
                                     </div>
                                 </div>
                             </div>
@@ -79,14 +81,14 @@ export const Player: React.FC = () => {
                 {/* Sidebar (Episodes & Comments) - Hidden on mobile portrait, shown below or right on larger */}
                 <div className="lg:w-[400px] w-full bg-surface-dark border-l border-white/5 flex flex-col h-full overflow-hidden">
                     <div className="flex border-b border-white/10">
-                        <button className="flex-1 py-4 text-sm font-bold text-primary border-b-2 border-primary bg-white/5">Episodes</button>
-                        <button className="flex-1 py-4 text-sm font-bold text-gray-400 hover:text-white">Comments (450)</button>
+                        <button className="flex-1 py-4 text-sm font-bold text-primary border-b-2 border-primary bg-white/5">{t('player.tabEpisodes')}</button>
+                        <button className="flex-1 py-4 text-sm font-bold text-gray-400 hover:text-white">{t('player.tabComments', { count: 450 })}</button>
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                         <div className="flex justify-between items-center mb-2 px-2">
-                             <span className="text-xs font-bold text-gray-400">{drama.totalEpisodes} Episodes</span>
-                             <span className="text-xs font-bold text-primary cursor-pointer">Unlocks available</span>
+                             <span className="text-xs font-bold text-gray-400">{t('player.totalEpisodes', { count: drama.totalEpisodes })}</span>
+                             <span className="text-xs font-bold text-primary cursor-pointer">{t('player.unlocksAvailable')}</span>
                         </div>
 
                         {drama.episodes.length > 0 ? drama.episodes.map((ep) => (
@@ -106,7 +108,7 @@ export const Player: React.FC = () => {
                                 </div>
                                 <div className="flex-1 min-w-0 flex flex-col justify-center">
                                     <div className="flex justify-between">
-                                        <p className={`text-xs font-bold uppercase mb-1 ${ep.number === 1 ? 'text-primary' : 'text-gray-400'}`}>Episode {ep.number}</p>
+                                        <p className={`text-xs font-bold uppercase mb-1 ${ep.number === 1 ? 'text-primary' : 'text-gray-400'}`}>{t('player.episodeNumber', { number: ep.number })}</p>
                                         <span className="text-[10px] text-gray-500">{ep.duration}</span>
                                     </div>
                                     <p className={`text-sm font-medium truncate ${ep.number === 1 ? 'text-white' : 'text-gray-300'}`}>{ep.title}</p>
@@ -120,8 +122,8 @@ export const Player: React.FC = () => {
                                          <Icon name="play_arrow" className="text-gray-500" />
                                      </div>
                                      <div className="flex-1">
-                                         <p className="text-xs font-bold text-gray-400 uppercase mb-1">Episode {i+1}</p>
-                                         <p className="text-sm font-medium text-gray-300">Chapter Title {i+1}</p>
+                                         <p className="text-xs font-bold text-gray-400 uppercase mb-1">{t('player.episodeNumber', { number: i + 1 })}</p>
+                                         <p className="text-sm font-medium text-gray-300">{t('player.chapterTitle', { number: i + 1 })}</p>
                                      </div>
                                 </div>
                              ))
@@ -132,7 +134,7 @@ export const Player: React.FC = () => {
                     <div className="p-4 border-t border-white/10 bg-gradient-to-r from-primary/20 to-purple-500/20">
                         <button className="w-full py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all">
                             <Icon name="stars" filled />
-                            Unlock All Episodes
+                            {t('player.unlockAllEpisodes')}
                         </button>
                     </div>
                 </div>

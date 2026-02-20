@@ -2,22 +2,26 @@ import React from 'react';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { Icon } from '../../components/Icon';
 import { MOCK_DRAMAS } from '../../constants';
+import { useI18n } from '../../i18n';
 
 export const Dashboard: React.FC = () => {
+    const { t, localizeSeries } = useI18n();
+    const topDramas = MOCK_DRAMAS.slice(0, 3).map(localizeSeries);
+
     return (
         <AdminLayout>
             <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
                 {/* Mobile Date Filters */}
                 <div className="flex gap-2 overflow-x-auto hide-scrollbar md:hidden">
-                    <button className="flex h-9 shrink-0 items-center justify-center px-4 rounded-lg bg-primary text-white text-xs font-bold shadow-md">Today</button>
-                    <button className="flex h-9 shrink-0 items-center justify-center px-4 rounded-lg bg-white dark:bg-white/5 border border-primary/10 text-xs font-bold">7 Days</button>
-                    <button className="flex h-9 shrink-0 items-center justify-center px-4 rounded-lg bg-white dark:bg-white/5 border border-primary/10 text-xs font-bold">30 Days</button>
+                    <button className="flex h-9 shrink-0 items-center justify-center px-4 rounded-lg bg-primary text-white text-xs font-bold shadow-md">{t('admin.dashboard.today')}</button>
+                    <button className="flex h-9 shrink-0 items-center justify-center px-4 rounded-lg bg-white dark:bg-white/5 border border-primary/10 text-xs font-bold">{t('admin.dashboard.days7')}</button>
+                    <button className="flex h-9 shrink-0 items-center justify-center px-4 rounded-lg bg-white dark:bg-white/5 border border-primary/10 text-xs font-bold">{t('admin.dashboard.days30')}</button>
                 </div>
 
                 {/* Header Text (Desktop) */}
                 <div className="hidden md:block">
-                    <h2 className="text-2xl font-extrabold text-[#1b0e12] dark:text-white">Dashboard Overview</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Welcome back, here's what's happening today.</p>
+                    <h2 className="text-2xl font-extrabold text-[#1b0e12] dark:text-white">{t('admin.dashboard.overviewTitle')}</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.dashboard.overviewSubtitle')}</p>
                 </div>
 
                 {/* KPI Cards */}
@@ -29,7 +33,7 @@ export const Dashboard: React.FC = () => {
                             </div>
                             <span className="text-emerald-500 text-[10px] md:text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">+12%</span>
                         </div>
-                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Revenue</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.dashboard.revenue')}</p>
                         <h3 className="text-xl md:text-2xl font-extrabold mt-1 text-[#1b0e12] dark:text-white">$12.4k</h3>
                     </div>
 
@@ -40,7 +44,7 @@ export const Dashboard: React.FC = () => {
                             </div>
                             <span className="text-emerald-500 text-[10px] md:text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">+8%</span>
                         </div>
-                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">New Users</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.dashboard.newUsers')}</p>
                         <h3 className="text-xl md:text-2xl font-extrabold mt-1 text-[#1b0e12] dark:text-white">2,840</h3>
                     </div>
 
@@ -51,7 +55,7 @@ export const Dashboard: React.FC = () => {
                             </div>
                             <span className="text-emerald-500 text-[10px] md:text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">+24%</span>
                         </div>
-                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Active Viewers</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.dashboard.activeViewers')}</p>
                         <h3 className="text-xl md:text-2xl font-extrabold mt-1 text-[#1b0e12] dark:text-white">12.5k</h3>
                     </div>
 
@@ -62,7 +66,7 @@ export const Dashboard: React.FC = () => {
                             </div>
                             <span className="text-rose-500 text-[10px] md:text-xs font-bold bg-rose-50 dark:bg-rose-900/20 px-2 py-1 rounded-full">-2.4%</span>
                         </div>
-                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Watch Time (Hrs)</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.dashboard.watchTime')}</p>
                         <h3 className="text-xl md:text-2xl font-extrabold mt-1 text-[#1b0e12] dark:text-white">12,840</h3>
                     </div>
                 </div>
@@ -72,8 +76,8 @@ export const Dashboard: React.FC = () => {
                     <div className="lg:col-span-2 bg-white dark:bg-white/5 p-5 md:p-8 rounded-2xl border border-primary/5 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <div>
-                                <h4 className="text-lg font-bold text-[#1b0e12] dark:text-white">Revenue Trend</h4>
-                                <p className="text-xs text-gray-400">Avg. $450 per hour</p>
+                                <h4 className="text-lg font-bold text-[#1b0e12] dark:text-white">{t('admin.dashboard.revenueTrend')}</h4>
+                                <p className="text-xs text-gray-400">{t('admin.dashboard.avgRevenuePerHour')}</p>
                             </div>
                             <Icon name="trending_up" className="text-primary" />
                         </div>
@@ -101,18 +105,20 @@ export const Dashboard: React.FC = () => {
                     {/* Top Performing */}
                     <div className="bg-white dark:bg-white/5 p-5 md:p-8 rounded-2xl border border-primary/5 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
-                            <h4 className="text-lg font-bold text-[#1b0e12] dark:text-white">Top Dramas</h4>
-                            <span className="text-primary text-sm font-bold cursor-pointer">View All</span>
+                            <h4 className="text-lg font-bold text-[#1b0e12] dark:text-white">{t('admin.dashboard.topDramas')}</h4>
+                            <span className="text-primary text-sm font-bold cursor-pointer">{t('common.viewAll')}</span>
                         </div>
                         <div className="space-y-4">
-                            {MOCK_DRAMAS.slice(0, 3).map((drama, i) => (
+                            {topDramas.map((drama, i) => (
                                 <div key={drama.id} className="flex items-center gap-3 md:gap-4">
                                     <div className="size-14 md:size-16 rounded-lg bg-gray-200 dark:bg-white/10 overflow-hidden shrink-0">
                                         <img src={drama.thumbnail} alt={drama.title} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h4 className="font-bold text-sm text-[#1b0e12] dark:text-white truncate">{drama.title}</h4>
-                                        <p className="text-xs text-gray-400 truncate">{drama.views} views • {Math.floor(Math.random() * 20 + 70)}% CR</p>
+                                        <p className="text-xs text-gray-400 truncate">
+                                            {t('admin.dashboard.viewsCr', { views: drama.views, cr: Math.floor(Math.random() * 20 + 70) })}
+                                        </p>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-primary text-sm">${(Math.random() * 3000 + 1000).toFixed(0)}</p>
@@ -122,7 +128,7 @@ export const Dashboard: React.FC = () => {
                             ))}
                         </div>
                         <button className="w-full mt-6 py-3 text-xs font-bold text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-white/5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                            Full Analytics Report
+                            {t('admin.dashboard.fullAnalytics')}
                         </button>
                     </div>
                 </div>
@@ -130,14 +136,14 @@ export const Dashboard: React.FC = () => {
                 {/* Growth Insights */}
                 <div className="rounded-2xl bg-primary p-6 md:p-8 text-white shadow-xl shadow-primary/20 overflow-hidden relative">
                     <div className="relative z-10">
-                        <h3 className="font-bold text-lg md:text-xl mb-1">Growth Insights</h3>
-                        <p className="text-sm opacity-90 mb-6">You've reached 85% of your monthly subscriber goal.</p>
+                        <h3 className="font-bold text-lg md:text-xl mb-1">{t('admin.dashboard.growthInsights')}</h3>
+                        <p className="text-sm opacity-90 mb-6">{t('admin.dashboard.monthlyGoal')}</p>
                         <div className="w-full bg-white/20 h-2 md:h-3 rounded-full overflow-hidden mb-2">
                             <div className="bg-white h-full w-[85%] rounded-full shadow-lg"></div>
                         </div>
                         <div className="flex justify-between text-xs md:text-sm font-bold">
-                            <span>Current: 8,500</span>
-                            <span>Goal: 10,000</span>
+                            <span>{t('admin.dashboard.currentGoal')}</span>
+                            <span>{t('admin.dashboard.goalTarget')}</span>
                         </div>
                     </div>
                     <div className="absolute -right-10 -bottom-10 size-40 bg-white/10 rounded-full blur-3xl"></div>

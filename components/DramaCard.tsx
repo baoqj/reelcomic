@@ -2,6 +2,7 @@ import React from 'react';
 import { Drama } from '../types';
 import { Icon } from './Icon';
 import { useNavigate } from 'react-router-dom';
+import { useI18n } from '../i18n';
 
 interface DramaCardProps {
     drama: Drama;
@@ -10,6 +11,7 @@ interface DramaCardProps {
 
 export const DramaCard: React.FC<DramaCardProps> = ({ drama, showBadge }) => {
     const navigate = useNavigate();
+    const { t, translateGenre } = useI18n();
 
     return (
         <div 
@@ -30,7 +32,7 @@ export const DramaCard: React.FC<DramaCardProps> = ({ drama, showBadge }) => {
                 )}
                 
                 <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm rounded text-white text-[10px] font-bold">
-                    {drama.totalEpisodes} EPS
+                    {t('player.totalEpisodes', { count: drama.totalEpisodes })}
                 </div>
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -48,7 +50,7 @@ export const DramaCard: React.FC<DramaCardProps> = ({ drama, showBadge }) => {
                 <Icon name="star" className="text-primary text-[14px]" filled />
                 <span className="font-bold text-gray-700 dark:text-gray-300">{drama.rating}</span>
                 <span className="text-gray-400">•</span>
-                <span className="text-gray-500 dark:text-gray-400 truncate">{drama.tags[0]}</span>
+                <span className="text-gray-500 dark:text-gray-400 truncate">{translateGenre(drama.tags[0] || '')}</span>
             </div>
         </div>
     );

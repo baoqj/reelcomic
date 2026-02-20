@@ -3,32 +3,35 @@ import { GENRES } from '../constants';
 import { DramaCard } from '../components/DramaCard';
 import { Icon } from '../components/Icon';
 import { useSeriesCatalog } from '../hooks/useSeriesCatalog';
+import { useI18n } from '../i18n';
 
 export const Explore: React.FC = () => {
     const [activeGenre, setActiveGenre] = useState("All Genres");
     const { series, loading } = useSeriesCatalog();
+    const { t, translateGenre, localizeSeries } = useI18n();
 
     const filteredDramas = activeGenre === "All Genres" 
         ? series 
         : series.filter(d => d.tags.includes(activeGenre));
+    const localizedFilteredDramas = filteredDramas.map(localizeSeries);
 
     return (
         <div className="pt-24 px-4 md:px-10 max-w-[1440px] mx-auto min-h-screen">
              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
                 <div>
                     <nav className="flex items-center gap-2 text-primary/60 text-xs font-bold uppercase tracking-widest mb-2">
-                        <span>Categories</span>
+                        <span>{t('explore.breadcrumbCategories')}</span>
                         <Icon name="chevron_right" className="text-xs" />
-                        <span className="text-primary">{activeGenre}</span>
+                        <span className="text-primary">{translateGenre(activeGenre)}</span>
                     </nav>
-                    <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 text-gray-900 dark:text-white">Anime Short Dramas</h1>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">Explore episodes between 60 and 120 seconds.</p>
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 text-gray-900 dark:text-white">{t('explore.title')}</h1>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">{t('explore.subtitle')}</p>
                 </div>
                 
                 <div className="relative group">
                     <button className="flex items-center gap-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2 text-sm font-bold shadow-sm hover:border-primary/30 transition-all text-gray-700 dark:text-gray-200">
                         <Icon name="sort" className="text-lg" />
-                        Sort: Newest
+                        {t('explore.sortNewest')}
                         <Icon name="expand_more" className="text-lg" />
                     </button>
                 </div>
@@ -46,7 +49,7 @@ export const Explore: React.FC = () => {
                             : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:border-primary/40'
                         }`}
                     >
-                        {genre}
+                        {translateGenre(genre)}
                     </button>
                 ))}
             </div>
@@ -54,7 +57,7 @@ export const Explore: React.FC = () => {
             {/* Content Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-y-8 gap-x-4 mb-20">
                 {/* Just duplicating the mock data to fill the grid visually as per design */}
-                {[...filteredDramas, ...filteredDramas, ...filteredDramas].map((drama, idx) => (
+                {[...localizedFilteredDramas, ...localizedFilteredDramas, ...localizedFilteredDramas].map((drama, idx) => (
                     <div key={`${drama.id}-${idx}`} className="w-full">
                         <DramaCard drama={drama} />
                     </div>
@@ -62,12 +65,12 @@ export const Explore: React.FC = () => {
             </div>
 
             {loading && (
-                <p className="text-center text-sm text-gray-400 mb-6">Loading latest catalog...</p>
+                <p className="text-center text-sm text-gray-400 mb-6">{t('explore.loadingCatalog')}</p>
             )}
             
             <div className="flex justify-center mb-20">
                  <button className="px-10 py-3 bg-primary/10 text-primary font-bold rounded-full hover:bg-primary hover:text-white transition-colors">
-                    Load More Titles
+                    {t('explore.loadMoreTitles')}
                  </button>
             </div>
         </div>
